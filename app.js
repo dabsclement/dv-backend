@@ -9,6 +9,7 @@ const cors = require("cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const podcastRoute = require("./routes/podcastRoute");
+const blogRoute = require("./routes/blogRoute");
 
 var app = express();
 
@@ -28,9 +29,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/podcast", podcastRoute);
+app.use("/blog", blogRoute);
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

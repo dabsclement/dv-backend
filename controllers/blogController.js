@@ -47,7 +47,7 @@ exports.blogList = async (req, res) => {
     }
     results.results = await Blog.find().limit(limit).skip(startIndex).exec();
     const paginatedResults = results;
-    const totalPage = Math.round(podcastList.length / limit);
+    const totalPage = Math.round(blogList.length / limit);
     return res.status(200).json({ result: paginatedResults, totalPage });
   } catch (error) {
     return res.status(500).json({ error });
