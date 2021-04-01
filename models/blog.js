@@ -1,6 +1,7 @@
+import Joi from "joi";
 import mongoose from "mongoose";
 
-const BlogSchema = mongoose.Schema({
+const Blog = mongoose.model("Blog", new mongoose.Schema({
   Title: {
     type: String,
     required: true
@@ -35,5 +36,19 @@ const BlogSchema = mongoose.Schema({
 {
   timestamps: true
 }
-);
-module.exports = mongoose.model("blog", BlogSchema);
+));
+
+const validateBlog = (blog) => {
+  const schema = Joi.object({
+    Title: Joi.string().min(5).max(3000).required(),
+    image: Joi.string().min(5).max(3000).required(),
+    Description: Joi.string().min(5).max(3000).required(),
+    featured: Joi.boolean().default(false),
+    Tags: Joi.array().items(Joi.string().required()),
+    Author: Joi.string().min(5).max(3000).required()
+
+  });
+  return schema.validate(blog);
+};
+exports.Blog = Blog;
+exports.validate = validateBlog;

@@ -1,14 +1,13 @@
-const Blog = require("../models/blog");
+const { Blog, validate } = require("../models/blog");
 
 exports.createBlog = async (req, res) => {
-  try {
-    const blog = new Blog(req.body);
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
-    await blog.save();
-    res.status(200).json({ blog });
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  let blog = new Blog(req.body);
+  blog = await blog.save();
+
+  res.send(blog);
 };
 
 exports.getBlogs = async (req, res) => {

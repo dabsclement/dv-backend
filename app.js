@@ -10,6 +10,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const podcastRoute = require("./routes/podcastRoute");
 const blogRoute = require("./routes/blogRoute");
+const bookRoute = require("./routes/bookRoute");
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/podcast", podcastRoute);
 app.use("/blog", blogRoute);
+app.use("/book", bookRoute);
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
