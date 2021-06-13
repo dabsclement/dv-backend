@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -57,7 +57,7 @@ mongoose
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useFindAndModify: true,
-    useCreateIndex: true
+    useCreateIndex: true,
   })
   .then(() => console.log("database connected sucessfully"))
   .catch((err) => console.log(err));

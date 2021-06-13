@@ -1,10 +1,29 @@
+const { imageUploader } = require("../config/cloudinary");
 const { Blog, validate } = require("../models/blog");
 
 exports.createBlog = async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
   try {
-    let blog = new Blog(req.body);
+    if (!req.file) {
+      throw Error("image not found");
+    }
+    console.log(req.file);
+    const { path } = req.file;
+    const image = await imageUploader(path);
+    console.log(image);
+    const imageData = {
+      image: image.imageUrl,
+      imageId: image.publicId,
+    };
+    const payload = Object.assign(req.body, imageData);
+    const { error } = validate(payload);
+    if (error) return res.status(400).send(error.details[0].message);
+    // const image = imageUploader(path);
+    // const imageData = {
+    //   image: image.imageUrl,
+    //   imageId: image.publicId,
+    // };
+    // const payload = Object.assign(req.body, imageData);
+    let blog = new Blog(payload);
     blog = await blog.save();
 
     return res.send(blog);
@@ -37,14 +56,14 @@ exports.blogList = async (req, res) => {
     if (endIndex < blogList.length) {
       results.next = {
         page: page + 1,
-        limit
+        limit,
       };
     }
 
     if (startIndex > 0) {
       results.previous = {
         page: page - 1,
-        limit
+        limit,
       };
     }
     results.results = await Blog.find().limit(limit).skip(startIndex).exec();
