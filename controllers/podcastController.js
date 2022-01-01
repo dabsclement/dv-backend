@@ -1,7 +1,14 @@
+const { uploadImage1, deleteImage } = require("../helpers/cloudinary");
 const Podcast = require("../models/podcast");
 
 exports.createPodcast = async (req, res) => {
   try {
+    const image = await uploadImage1(req.file, "podcastImage", req.body.PodcastUrl);
+    const imageDetails = {
+      image: image.path,
+      imagePublicId: image.name
+    };
+    Object.assign(req.body, imageDetails);
     const podcast = new Podcast(req.body);
 
     await podcast.save();
@@ -57,6 +64,8 @@ exports.podcastList = async (req, res) => {
 exports.deletePodcast = async (req, res) => {
   try {
     const podcast = await Podcast.findByIdAndDelete(req.params.id);
+    console.log(podcast);
+    let delete = await deleteImage(podcast.imagePublicId)
 
     if (!podcast) res.status(404).send("No podcast found");
     res.status(200).send();

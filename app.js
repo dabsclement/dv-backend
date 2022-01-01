@@ -5,6 +5,9 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -59,7 +62,7 @@ mongoose
     useFindAndModify: true,
     useCreateIndex: true
   })
-  .then(() => console.log("database connected sucessfully"))
+  .then(() => console.log("database connected successfully"))
   .catch((err) => console.log(err));
 
 module.exports = app;

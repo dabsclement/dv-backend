@@ -8,7 +8,10 @@ const PodcastSchema = mongoose.Schema({
   image: {
     type: String,
     required: true
-
+  },
+  imagePublicId: {
+    type: String,
+    required: true
   },
   PodcastUrl: {
     type: String,

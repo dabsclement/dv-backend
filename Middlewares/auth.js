@@ -2,8 +2,14 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../models/user");
 
 const checkAdmin = async (req, res, next) => {
-  const token = req.headers.authorization;
+  const AuthorizationHeader = req.headers.authorization;
+  const token = AuthorizationHeader.split(" ")[1];
+
   const decode = jwt.verify(token, process.env.secretKey || "defaultKey");
+  console.log(decode);
+  if (!decode) {
+    throw new Error("Auth failed");
+  }
   const userMail = decode.email;
   await userModel.findOne({ email: userMail })
     .then(data => {
@@ -21,6 +27,7 @@ const checkAdmin = async (req, res, next) => {
     })
 
     .catch((err) => {
+      console.log("hiii");
       res.status(500).json({
         status: "error",
         message: err.message
