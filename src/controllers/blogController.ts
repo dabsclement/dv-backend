@@ -1,50 +1,52 @@
-const { Blog, validate } = require("../models/blog");
+import { Request, Response, NextFunction } from "express";
+import Blog from "@models/blog";
+import { validateBlog } from "@helpers/validate";
 
-exports.createBlog = async (req, res) => {
-  const { error } = validate(req.body);
+export const createBlog = async (req: Request, res: Response) => {
+  const { error } = validateBlog(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   try {
     let blog = new Blog(req.body);
     blog = await blog.save();
 
-    return res.send(blog);
+    return res.send({ status: 201, data: blog });
   } catch (err) {
     res.status(500).send(err);
   }
 };
 
-exports.getBlogs = async (req, res) => {
+export const getBlogs = async (_req: Request, res: Response) => {
   try {
     // fetch all blogs
     const blogs = await Blog.find({});
     return res.status(200).json({ blogs });
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 // get blogs by page
-exports.blogList = async (req, res) => {
+export const blogList = async (req: Request, res: Response) => {
   try {
     const blogList = await Blog.find();
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page as string);
+    const limit = parseInt(req.query.limit as string);
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    const results = {};
+    const results: any = {};
 
     if (endIndex < blogList.length) {
       results.next = {
         page: page + 1,
-        limit
+        limit,
       };
     }
 
     if (startIndex > 0) {
       results.previous = {
         page: page - 1,
-        limit
+        limit,
       };
     }
     results.results = await Blog.find().limit(limit).skip(startIndex).exec();
@@ -56,7 +58,7 @@ exports.blogList = async (req, res) => {
   }
 };
 
-exports.deleteBlog = async (req, res) => {
+export const deleteBlog = async (req: Request, res: Response) => {
   try {
     const blog = await Blog.findByIdAndDelete(req.params.id);
 
@@ -67,10 +69,10 @@ exports.deleteBlog = async (req, res) => {
   }
 };
 
-exports.updateBlog = async (req, res) => {
+export const updateBlog = async (req: Request, res: Response) => {
   try {
     const blog = await Blog.findByIdAndUpdate(req.params.id, req.body);
-    await blog.save();
+    await blog?.save();
     res.send(blog);
   } catch (err) {
     res.status(500).send(err);

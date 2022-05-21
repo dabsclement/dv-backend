@@ -1,4 +1,5 @@
-const fetch = require("node-fetch");
+import { Request, Response } from "express";
+import fetch from "node-fetch";
 // import addUsertoLists from "../helpers/newsletters";
 // exports.newsLetter = async (req, res) => {
 //   try {
@@ -13,7 +14,7 @@ const fetch = require("node-fetch");
 //   }
 // };
 
-exports.newsletter = async (req, res) => {
+export const newsletter = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   // Make sure fields are filled
@@ -45,5 +46,5 @@ exports.newsletter = async (req, res) => {
     .then(res.statusCode === 200
       ? res.status(200)
       : res.status(404))
-    .catch(err => console.log(err));
+    .catch((err: any) => console.log(err));
 };

@@ -1,17 +1,20 @@
 // const jwt = require("jsonwebtoken");
-const jwt = require("jsonwebtoken");
-var User = require("../models/user");
-var bcrypt = require("bcrypt");
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import User from "@models/user";
+import bcrypt from "bcrypt";
 var saltRounds = 10;
-exports.signup = async (req, res) => {
+
+
+export const signup = async (req: Request, res: Response) => {
   var newUser = new User(req.body);
 
   // ensures no duplicate user
   await User.findOne({ email: newUser.email })
-    .then(async (profile) => {
+    .then(async (profile: any) => {
       if (!profile) {
         // hash password using bcrypt
-        bcrypt.hash(newUser.password, saltRounds, async (err, hash) => {
+        bcrypt.hash(newUser.password, saltRounds, async (err: any, hash: any) => {
           if (err) {
             res.status(401).json({
               status: "error",
@@ -32,7 +35,7 @@ exports.signup = async (req, res) => {
                   }
                 });
               })
-              .catch((err) => {
+              .catch((err: any) => {
                 res.status(401).json({
                   status: "error",
                   message: err.message
@@ -47,7 +50,7 @@ exports.signup = async (req, res) => {
         });
       }
     })
-    .catch((err) => {
+    .catch((err: any) => {
       res.status(500).json({
         status: "error",
         error: err.message
@@ -55,7 +58,7 @@ exports.signup = async (req, res) => {
     });
 };
 
-exports.login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   var newUser = {
     email: req.body.email,
     password: req.body.password
@@ -72,7 +75,7 @@ exports.login = async (req, res) => {
         bcrypt.compare(
           newUser.password,
           profile.password,
-          async (err, result) => {
+          async (err: any, result: any) => {
             if (err) {
               res.status(401).json({
                 status: "error",

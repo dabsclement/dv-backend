@@ -1,9 +1,13 @@
-const { uploadImage1, deleteImage } = require("../helpers/cloudinary");
-const Podcast = require("../models/podcast");
+import { Request, Response } from "express";
+import { uploadImage1, deleteImage } from "@helpers/cloudinary";
+import Podcast from "@models/podcast";
+import { validatePodcast } from "@helpers/validate";
 
-exports.createPodcast = async (req, res) => {
+export const createPodcast = async (req: Request, res: Response) => {
+  const { error } = validatePodcast(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
   try {
-    const image = await uploadImage1(req.file, "podcastImage", req.body.PodcastUrl);
+    const image: any = await uploadImage1(req.file, "podcastImage", req.body.PodcastUrl);
     const imageDetails = {
       image: image.path,
       imagePublicId: image.name
@@ -18,7 +22,7 @@ exports.createPodcast = async (req, res) => {
   }
 };
 
-exports.getPodcasts = async (req, res) => {
+export const getPodcasts = async (req: Request, res: Response) => {
   try {
     // fetch all podcast
     const podcasts = await Podcast.find({});
@@ -28,16 +32,16 @@ exports.getPodcasts = async (req, res) => {
   }
 };
 
-exports.podcastList = async (req, res) => {
+export const podcastList = async (req: Request, res: Response) => {
   try {
     const podcastList = await Podcast.find();
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
+    const page = parseInt((req.query.page as string));
+    const limit = parseInt((req.query.limit as string));
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    const results = {};
+    const results: any = {};
 
     if (endIndex < podcastList.length) {
       results.next = {
@@ -61,7 +65,7 @@ exports.podcastList = async (req, res) => {
   }
 };
 
-exports.deletePodcast = async (req, res) => {
+export const deletePodcast = async (req: Request, res: Response) => {
   try {
     const podcast = await Podcast.findByIdAndDelete(req.params.id);
     console.log(podcast);
@@ -74,12 +78,12 @@ exports.deletePodcast = async (req, res) => {
   }
 };
 
-exports.updatePodcast = async (req, res) => {
+export const updatePodcast = async (req: Request, res: Response) => {
   try {
     const podcast = await Podcast.findByIdAndUpdate(req.params.id, req.body);
-    await Podcast.save();
-    res.send(podcast);
-  } catch (err) {
-    res.status(500).send(err);
+    await podcast?.save();
+    return res.send(podcast);
+  } catch (err: any) {
+    return res.status(500).send(err);
   }
 };
