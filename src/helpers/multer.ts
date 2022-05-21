@@ -1,9 +1,10 @@
+import { Response, Request, NextFunction } from "express";
 import multer from "multer";
 import path from "path";
 
 const multerImageUpload = multer({
   // storage: multer.diskStorage({}),
-  fileFilter: (req, file, cb) => {
+  fileFilter: (_req, file, cb: any) => {
     // get file extension
     // eslint-disable-next-line no-underscore-dangle
     const _ext = path.extname(file.originalname);
@@ -16,7 +17,7 @@ const multerImageUpload = multer({
     cb(null, true);
   },
   // limit image file size to 5 megabyte
-  limits: { fileSize: 5 * 1024 * 1024 }
+  limits: { fileSize: 5 * 1024 * 1024 },
 }).single("image");
 
 export default multerImageUpload;
