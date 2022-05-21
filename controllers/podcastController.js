@@ -65,10 +65,10 @@ exports.deletePodcast = async (req, res) => {
   try {
     const podcast = await Podcast.findByIdAndDelete(req.params.id);
     console.log(podcast);
-    let delete = await deleteImage(podcast.imagePublicId)
+    const delet = await deleteImage(podcast.imagePublicId)
 
     if (!podcast) res.status(404).send("No podcast found");
-    res.status(200).send();
+    res.status(200).send(delet);
   } catch (err) {
     res.status(500).send(err);
   }
