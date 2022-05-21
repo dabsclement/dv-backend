@@ -31,8 +31,8 @@ const createserver = (): express.Application => {
   app.use(errorHandler);
 
   // view engine setup
-  app.set("views", path.join(__dirname, "views"));
-  app.set("view engine", "jade");
+  // app.set("views", path.join(__dirname, "views"));
+  // app.set("view engine", "jade");
 
   app.get("/", (_req: Request, res: Response) => {
     res.send({ success: true, message: "server is up and running" });
