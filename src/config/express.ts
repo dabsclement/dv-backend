@@ -4,13 +4,14 @@ import createError from "http-errors";
 import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import errorHandler from "../middlewares/errorHandler";
+import { connect } from "./connect";
+import { AddressInfo } from "net";
 
-interface IErrorHandler {
-  message?: string;
-  status?: number;
-}
 const createserver = (): express.Application => {
   const app = express();
+  const host: string | number = process.env.HOST || "localhost";
+  const port: string | number = process.env.PORT || 5000;
 
   app.use(express.urlencoded({ extended: true }));
   app.use(cors());
@@ -27,20 +28,7 @@ const createserver = (): express.Application => {
   });
 
   // error handler
-  app.use(function (
-    err: IErrorHandler,
-    req: Request,
-    res: Response,
-    _next: NextFunction
-  ) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render("error");
-  });
+  app.use(errorHandler);
 
   // view engine setup
   app.set("views", path.join(__dirname, "views"));
@@ -50,7 +38,28 @@ const createserver = (): express.Application => {
     res.send({ success: true, message: "server is up and running" });
   });
 
+  const server = app.listen({ host, port }, () => {
+    const addressInfo = server.address() as AddressInfo;
+    console.log(
+      `Server ready at http:${addressInfo.address}:${addressInfo.port}`
+    );
+  });
+
+  const signalTraps: NodeJS.Signals[] = ["SIGTERM", "SIGINT", "SIGUSR2"];
+  signalTraps.forEach((type) => {
+    process.once(type, async () => {
+      console.log(`process.once ${type}`);
+
+      server.close(() => {
+        console.log("HTTP Server close");
+      });
+    });
+  });
+
+  // connect database
+  connect();
+
   return app;
 };
 
-export { createserver };
+export default createserver;
