@@ -1,4 +1,3 @@
-import Joi from "joi";
 import mongoose from "mongoose";
 
 const Book = mongoose.model(
@@ -23,13 +22,5 @@ const Book = mongoose.model(
   })
 );
 
-const validateBook = (book) => {
-  const schema = Joi.object({
-    Title: Joi.string().min(5).max(3000).required(),
-    bookCover: Joi.string().min(5).max(3000).required(),
-    bookUrl: Joi.string().min(5).max(3000).required(),
-  });
-  return schema.validate(book);
-};
-exports.Book = Book;
-exports.validate = validateBook;
+
+export default Book;
