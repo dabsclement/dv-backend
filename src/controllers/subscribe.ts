@@ -1,4 +1,5 @@
-const fetch = require("node-fetch");
+import { Request, Response } from "express";
+import fetch from "node-fetch";
 // import addUsertoLists from "../helpers/newsletters";
 // exports.newsLetter = async (req, res) => {
 //   try {
@@ -13,7 +14,7 @@ const fetch = require("node-fetch");
 //   }
 // };
 
-exports.newsletter = async (req, res) => {
+export const newsletter = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   // Make sure fields are filled
@@ -27,10 +28,9 @@ exports.newsletter = async (req, res) => {
     members: [
       {
         email_address: email,
-        status: "subscribed"
-
-      }
-    ]
+        status: "subscribed",
+      },
+    ],
   };
 
   const postData = JSON.stringify(data);
@@ -38,12 +38,12 @@ exports.newsletter = async (req, res) => {
   fetch("https://us1.api.mailchimp.com/3.0/lists/fd7fc5a87c", {
     method: "POST",
     headers: {
-      Authorization: "auth 1c77e1708e5fe5c82303856c4944d496-us1"
+      Authorization: "auth 1c77e1708e5fe5c82303856c4944d496-us1",
     },
-    body: postData
+    body: postData,
   })
-    .then(res.statusCode === 200
-      ? res.status(200)
-      : res.status(404))
-    .catch(err => console.log(err));
+    .then((res: any) =>
+      res.statusCode === 200 ? res.status(200) : res.status(404)
+    )
+    .catch((err: any) => console.log(err));
 };

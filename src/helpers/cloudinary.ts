@@ -5,22 +5,21 @@ const cloudinary = _cloudinary.v2;
 cloudinary.config({
   cloud_name: process.env.cloud_name,
   api_key: process.env.cloudinary_api_key,
-  api_secret: process.env.cloudinary_api_secret
+  api_secret: process.env.cloudinary_api_secret,
 });
 
-const uploadImage = async (image, folder, podcast) => {
-  const uploadedImage = await cloudinary.uploader.upload(image.path,
-    {
-      folder: `drummersville/${folder}/${podcast}`
-    });
+const uploadImage = async (image: any, folder: any, podcast: any) => {
+  const uploadedImage = await cloudinary.uploader.upload((image.path as string), {
+    folder: `drummersville/${folder}/${podcast}`,
+  });
   return uploadedImage;
 };
 
-const deleteImage = async (cloudinaryId) => {
+const deleteImage = async (cloudinaryId: string) => {
   await cloudinary.uploader.destroy(cloudinaryId);
 };
 
-const toBuffer = (arrayBuffer) => {
+const toBuffer = (arrayBuffer: any) => {
   const buf = Buffer.alloc(arrayBuffer.byteLength);
   const view = new Uint8Array(arrayBuffer);
   for (var i = 0; i < buf.length; ++i) {
@@ -29,20 +28,19 @@ const toBuffer = (arrayBuffer) => {
   return buf;
 };
 
-const uploadImage1 = async (image, folder, podcast) => {
+const uploadImage1 = async (image: any, folder: any, podcast: any) => {
   console.log(image, folder, podcast);
   return new Promise((resolve, reject) => {
     console.log("hello");
     const cldUploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: `drummersville/${folder}/${podcast}`
-
+        folder: `drummersville/${folder}/${podcast}`,
       },
       async function (error, result) {
         if (result) {
           resolve({
             path: result.url,
-            name: result.public_id
+            name: result.public_id,
           });
         } else {
           console.log(error);
@@ -56,9 +54,4 @@ const uploadImage1 = async (image, folder, podcast) => {
   });
 };
 
-export {
-  cloudinary,
-  uploadImage,
-  deleteImage,
-  uploadImage1
-};
+export { cloudinary, uploadImage, deleteImage, uploadImage1 };
