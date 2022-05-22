@@ -57,4 +57,4 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-module.exports = { checkAdmin, checkAuth };
+export { checkAdmin, checkAuth };

@@ -7,6 +7,7 @@ import logger from "morgan";
 import errorHandler from "../middlewares/errorHandler";
 import { connect } from "./connect";
 import { AddressInfo } from "net";
+import router from "../routes";
 
 const createserver = (): express.Application => {
   const app = express();
@@ -22,21 +23,19 @@ const createserver = (): express.Application => {
 
   app.disable("x-powered-by");
 
-  // catch 404 and forward to error handler
-  app.use(function (_req: Request, _res: Response, next: NextFunction) {
-    next(createError(404));
-  });
-
   // error handler
   app.use(errorHandler);
 
   // view engine setup
-  // app.set("views", path.join(__dirname, "views"));
-  // app.set("view engine", "jade");
+  app.set("views", path.join(__dirname, "views"));
+  app.set("view engine", "jade");
 
   app.get("/", (_req: Request, res: Response) => {
     res.send({ success: true, message: "server is up and running" });
   });
+
+  // routes
+  app.use("/api", router);
 
   const server = app.listen({ host, port }, () => {
     const addressInfo = server.address() as AddressInfo;

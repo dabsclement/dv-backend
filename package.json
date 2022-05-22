@@ -60,7 +60,10 @@
     "@root": "src",
     "@services": "src/services",
     "@config": "src/config",
-    "@middlewares": "src/middleware",
-    "@models": "src/models"
+    "@middlewares": "src/middlewares",
+    "@helpers": "src/helpers",
+    "@models": "src/models",
+    "@controllers": "src/controllers",
+    "@routes": "src/routes"
   }
 }
